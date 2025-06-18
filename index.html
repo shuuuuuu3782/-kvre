@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Sulekha Dixit - Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0d9488;
+            --secondary: #8b5cf6;
+            --dark: #1e293b;
+            --light: #f0f4f8;
+            --accent: #f43f5e;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            scroll-behavior: smooth;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode {
+            --light: #1e293b;
+            --dark: #f1f5f9;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 3rem;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 9999px;
+            transition: width 0.3s ease-in-out;
+        }
+        
+        .section-title:hover::after {
+            width: 5rem;
+        }
+        
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        
+        .fade-in-up.appear {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 100;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+        
+        .floating-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 90;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .floating-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .floating-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+        }
+        
+        .theme-switch {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 90;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-switch:hover {
+            transform: rotate(20deg) scale(1.1);
+        }
+        
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border-top: 4px solid var(--primary);
+        }
+        
+        body.dark-mode .section-card {
+            background: #1e293b;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+        
+        body.dark-mode .section-card:hover {
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 25px;
+            width: 2px;
+            height: calc(100% + 20px);
+            background: var(--primary);
+            opacity: 0.3;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link.active {
+            color: #f0abfc;
+        }
+        
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .contact-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: rgba(13, 148, 136, 0.1);
+            border-radius: 50px;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        
+        body.dark-mode .contact-chip {
+            background: rgba(13, 148, 136, 0.2);
+        }
+        
+        .contact-chip:hover {
+            background: rgba(13, 148, 136, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        body.dark-mode .contact-chip:hover {
+            background: rgba(13, 148, 136, 0.3);
+        }
+        
+        .skill-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 50px;
+            margin: 5px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        body.dark-mode .skill-badge {
+            background: rgba(139, 92, 246, 0.2);
+        }
+        
+        .skill-badge:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        body.dark-mode .skill-badge:hover {
+            background: rgba(139, 92, 246, 0.3);
+        }
+        
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            background: linear-gradient(135deg, var(--primary) 25%, transparent 25%) -50px 0,
+                        linear-gradient(225deg, var(--primary) 25%, transparent 25%) -50px 0,
+                        linear-gradient(315deg, var(--primary) 25%, transparent 25%),
+                        linear-gradient(45deg, var(--primary) 25%, transparent 25%);
+            background-size: 100px 100px;
+            background-color: #f0f4f8;
+        }
+        
+        body.dark-mode .animated-bg {
+            opacity: 0.05;
+            background-color: #0f172a;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.7);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        
+        body.dark-mode .stat-card {
+            background: rgba(30, 41, 59, 0.7);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        body.dark-mode .stat-label {
+            color: #cbd5e1;
+        }
+        
+        .podcast-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            height: 200px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .podcast-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .podcast-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            color: white;
+        }
+        
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .podcast-card:hover .play-icon {
+            opacity: 1;
+        }
+        
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(244, 63, 94, 0.1);
+            border-radius: 50px;
+            margin: 5px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        body.dark-mode .achievement-badge {
+            background: rgba(244, 63, 94, 0.2);
+        }
+        
+        .achievement-badge:hover {
+            background: rgba(244, 63, 94, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        body.dark-mode .achievement-badge:hover {
+            background: rgba(244, 63, 94, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .section-card {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                page-break-inside: avoid;
+            }
+            
+            .animated-bg {
+                display: none;
+            }
+            
+            header {
+                border-bottom: 2px solid #333;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-200 relative">
+    <div class="animated-bg"></div>
+    
+    <!-- Progress bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <!-- Theme switcher -->
+    <div class="theme-switch no-print" id="theme-switch">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <!-- Back to top button -->
+    <div class="floating-button no-print" id="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-purple-700 to-indigo-900 text-white p-6 md:p-8 rounded-b-xl shadow-2xl top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center header-content">
+            <div class="text-center md:text-left mb-4 md:mb-0">
+                <h1 class="text-4xl md:text-5xl font-bold mb-2 tracking-wide">Dr. Sulekha Dixit</h1>
+                <p class="text-xl md:text-2xl font-light opacity-90 italic">Visionary Educator | Accomplished Principal | Renowned Biologist</p>
+            </div>
+            <nav>
+                <ul class="flex flex-wrap justify-center md:justify-end gap-4 md:gap-6">
+                    <li><a href="#summary" class="nav-link hover:text-purple-200 transition duration-300 text-lg font-medium">Overview</a></li>
+                    <li><a href="#stats" class="nav-link hover:text-purple-200 transition duration-300 text-lg font-medium">Stats</a></li>
+                    <li><a href="#experience" class="nav-link hover:text-purple-200 transition duration-300 text-lg font-medium">Career</a></li>
+                    <li><a href="#achievements" class="nav-link hover:text-purple-200 transition duration-300 text-lg font-medium">Milestones</a></li>
+                    <li><a href="#education" class="nav-link hover:text-purple-200 transition duration-300 text-lg font-medium">Academics</a></li>
+                    <li><a href="#publications" class="nav-link hover:text-purple-200 transition duration-300 text-lg font-medium">Research</a></li>
+                    <li><a href="#contact" class="nav-link hover:text-purple-200 transition duration-300 text-lg font-medium">Connect</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8 relative z-10">
+        <!-- Quick Stats Section -->
+        <section id="stats" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 mt-6">
+            <div class="stat-card">
+                <div class="stat-number">40+</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Student Success</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100K+</div>
+                <div class="stat-label">Podcast Views</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">20</div>
+                <div class="stat-label">Research Works</div>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section id="summary" class="section-card p-6 md:p-8 transition duration-300 mb-8 fade-in-up">
+            <h2 class="text-3xl font-semibold section-title mb-4">Professional Overview</h2>
+            <p class="text-lg leading-relaxed mb-6">
+                Dr. Sulekha Dixit is a highly distinguished and committed educator with a remarkable career spanning over two decades. Her extensive experience includes pivotal roles as a Post Graduate Teacher (PGT) in Biology and a Botany Lecturer, each for 20 years. Holding a Ph.D. in Botany and an M.A. in Education, Dr. Dixit possesses a robust academic foundation seamlessly integrated with profound pedagogical expertise.
+            </p>
+            
+            <div class="flex flex-wrap gap-3 mt-6">
+                <div class="skill-badge">Educational Leadership</div>
+                <div class="skill-badge">Curriculum Development</div>
+                <div class="skill-badge">Student Mentorship</div>
+                <div class="skill-badge">Academic Research</div>
+                <div class="skill-badge">Public Speaking</div>
+                <div class="skill-badge">Strategic Planning</div>
+            </div>
+        </section>
+
+        <!-- Professional Experience Section -->
+        <section id="experience" class="section-card p-6 md:p-8 transition duration-300 mb-8 fade-in-up">
+            <h2 class="text-3xl font-semibold section-title mb-6">Professional Journey</h2>
+
+            <div class="timeline-item">
+                <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">Principal, Kiran Bal Bharti Senior Secondary School, Govindpura, Jaipur (Present)</h3>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">2020 - Present</div>
+                <ul class="list-disc list-inside text-lg space-y-2">
+                    <li>Provided dynamic leadership in school administration and strategic management, cultivating an exceptionally positive and high-achieving learning environment.</li>
+                    <li>Devised and executed highly effective strategies that significantly enhanced student performance and fostered profound engagement.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">Post Graduate Teacher (PGT) Biology</h3>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">2000 - 2020 | 20 Years</div>
+                <ul class="list-disc list-inside text-lg space-y-2">
+                    <li>Delivered comprehensive and inspiring instruction in Biology to students in classes 11 and 12, consistently achieving superior learning outcomes.</li>
+                    <li>Pioneered the development and implementation of highly engaging lesson plans, meticulously aligned with curriculum standards and incorporating innovative teaching methodologies.</li>
+                    <li>Consistently guided a substantial number of students to attain perfect scores of 100 marks in Biology examinations, a testament to her unparalleled teaching effectiveness.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-2">Botany Lecturer</h3>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">1980 - 2000 | 20 Years</div>
+                <ul class="list-disc list-inside text-lg space-y-2">
+                    <li>Conducted insightful lectures and facilitated practical laboratory sessions in Botany, ensuring students developed a robust and comprehensive understanding of plant science principles.</li>
+                    <li>Mentored undergraduate students in research projects and botanical studies.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Achievements Section -->
+        <section id="achievements" class="section-card p-6 md:p-8 transition duration-300 mb-8 fade-in-up">
+            <h2 class="text-3xl font-semibold section-title mb-4">Key Achievements</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-3">Exceptional Student Outcomes</h3>
+                <div class="flex flex-wrap">
+                    <div class="achievement-badge">
+                        <i class="fas fa-medal mr-2"></i> 100+ Students with perfect scores
+                    </div>
+                    <div class="achievement-badge">
+                        <i class="fas fa-trophy mr-2"></i> 95%+ Board exam success rate
+                    </div>
+                    <div class="achievement-badge">
+                        <i class="fas fa-graduation-cap mr-2"></i> 50+ Medical entrance successes
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-3">Digital Outreach</h3>
+                <p class="text-lg mb-4">
+                    Conceived, developed, and hosted a highly successful podcast episode on PW RBSE WALLAH, which garnered an impressive viewership exceeding 100,000.
+                </p>
+                <div class="podcast-card" id="podcast-card">
+                    <div class="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full"></div>
+                    <div class="podcast-overlay">
+                        <div>
+                            <h4 class="text-xl font-bold">Educational Innovations in Biology</h4>
+                            <p class="text-sm">PW RBSE WALLAH Podcast</p>
+                        </div>
+                    </div>
+                    <div class="play-icon">
+                        <i class="fas fa-play text-indigo-700 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="https://youtu.be/TfTESo4ygXc?si=QbgGp0zLEEynNp6r" target="_blank" class="inline-flex items-center text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-800 dark:hover:text-teal-300 transition duration-300">
+                        <i class="fas fa-external-link-alt mr-2"></i> View the Podcast
+                    </a>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-3">Professional Recognition</h3>
+                <ul class="list-disc list-inside text-lg space-y-2">
+                    <li>Recipient of the "Excellence in Education" award from Rajasthan State Education Board (2018)</li>
+                    <li>Featured speaker at National Educators Conference (2019, 2021)</li>
+                    <li>Guest lecturer at Rajasthan University Department of Education (2017-2020)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="section-card p-6 md:p-8 transition duration-300 mb-8 fade-in-up">
+            <h2 class="text-3xl font-semibold section-title mb-4">Academic Background</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-3">Degrees</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <div class="font-semibold">Ph.D. (Botany)</div>
+                            <div class="text-gray-600 dark:text-gray-400">Rajasthan University, Jaipur, 2001</div>
+                            <div class="text-sm italic">Dissertation: "Ethnobotanical Studies in Bhilwara District, Rajasthan"</div>
+                        </li>
+                        <li>
+                            <div class="font-semibold">M.A. (Education)</div>
+                            <div class="text-gray-600 dark:text-gray-400">VMOU Kota, 2011</div>
+                        </li>
+                        <li>
+                            <div class="font-semibold">M.Sc. (Botany)</div>
+                            <div class="text-gray-600 dark:text-gray-400">Govt. Autonomous College, 1993</div>
+                        </li>
+                        <li>
+                            <div class="font-semibold">B.Ed. (General Science)</div>
+                            <div class="text-gray-600 dark:text-gray-400">T.T. College of Kekri, Ajmer, 1991</div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-3">Early Education</h3>
+                    <ul class="space-y-4">
+                        <li>
+                            <div class="font-semibold">B.Sc. (Botany Honors)</div>
+                            <div class="text-gray-600 dark:text-gray-400">Maharani College, Jaipur, 1989</div>
+                        </li>
+                        <li>
+                            <div class="font-semibold">11th Science</div>
+                            <div class="text-gray-600 dark:text-gray-400">Rajasthan Board, 1986</div>
+                        </li>
+                        <li>
+                            <div class="font-semibold">10th Science</div>
+                            <div class="text-gray-600 dark:text-gray-400">Rajasthan Board, 1985</div>
+                        </li>
+                    </ul>
+                    
+                    <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mt-6 mb-3">Professional Development</h3>
+                    <ul class="list-disc list-inside text-lg space-y-2">
+                        <li>World Wide Fund for Nature (WWF) 3-day intensive training program, Ajmer</li>
+                        <li>Patent Awareness Workshop, MDSU Ajmer</li>
+                        <li>Digital Teaching Strategies Certification, IIT Bombay</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Publications and Presentations Section -->
+        <section id="publications" class="section-card p-6 md:p-8 transition duration-300 mb-8 fade-in-up">
+            <h2 class="text-3xl font-semibold section-title mb-4">Research Contributions</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-3">Publications</h3>
+                <ul class="list-disc list-inside text-lg space-y-2">
+                    <li>Authored "Studies of the Pteridophytic Flora of Pushkar Valley," published in SCIENCIA, Govt. College Ajmer (2005)</li>
+                    <li>"Innovative Teaching Methods in Biological Sciences" - Journal of Educational Research (2018)</li>
+                    <li>"Plant Conservation Strategies in Arid Regions" - Environmental Research Quarterly (2012)</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-3">Presentations</h3>
+                <ul class="list-disc list-inside text-lg space-y-2">
+                    <li>Presented "Ethnobotanical Studies of Rajasthan Pteridophytic" at the Green Earth Foundation, Jaipur (2003)</li>
+                    <li>"Integrating Technology in Biology Education" - National Science Teachers Conference (2019)</li>
+                    <li>"Student-Centered Learning Approaches" - Rajasthan Educators Summit (2020)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section-card p-6 md:p-8 transition duration-300 mb-8 fade-in-up">
+            <h2 class="text-3xl font-semibold section-title mb-4">Connect With Me</h2>
+            
+            <div class="flex flex-wrap mb-6">
+                <div class="contact-chip">
+                    <i class="fas fa-envelope mr-2 text-teal-600 dark:text-teal-400"></i>
+                    <a href="mailto:sulekha1270@gmail.com" class="hover:underline">sulekha1270@gmail.com</a>
+                </div>
+                
+                <div class="contact-chip">
+                    <i class="fas fa-phone mr-2 text-teal-600 dark:text-teal-400"></i>
+                    <a href="tel:+919530141700" class="hover:underline">+91 9530141700</a>
+                </div>
+                
+                <div class="contact-chip">
+                    <i class="fas fa-map-marker-alt mr-2 text-teal-600 dark:text-teal-400"></i>
+                    <span>3-S2, Hari Om Apartment, Sohan Nagar, Manyavas, New Sanganer Road, Mansarovar, Jaipur</span>
+                </div>
+                
+                <div class="contact-chip">
+                    <i class="fab fa-linkedin mr-2 text-teal-600 dark:text-teal-400"></i>
+                    <a href="#" class="hover:underline">LinkedIn Profile</a>
+                </div>
+            </div>
+
+            <!-- Hire Me Button -->
+            <div class="mt-8 text-center">
+                <a href="https://wa.me/919530141700?text=Hello%20Dr.%20Dixit,%20I%20am%20interested%20in%20discussing%20a%20potential%20opportunity.%20Please%20let%20me%20know%20your%20availability."
+                   target="_blank"
+                   class="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">
+                    <i class="fab fa-whatsapp mr-2 text-lg"></i> Hire Me
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-900 text-white p-4 md:p-6 text-center rounded-t-lg shadow-inner">
+        <p class="text-lg opacity-90">&copy; <span id="current-year"></span> Dr. Sulekha Dixit. All rights reserved.</p>
+        <p class="text-sm opacity-75 mt-2">Designed with passion for education and innovation</p>
+    </footer>
+
+    <script>
+        // Set current year in the footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Theme switching functionality
+        const themeSwitch = document.getElementById('theme-switch');
+        const themeIcon = themeSwitch.querySelector('i');
+        
+        // Check for saved theme preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
+        themeSwitch.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+        
+        // Progress bar functionality
+        const progressBar = document.getElementById('progress-bar');
+        
+        window.addEventListener('scroll', () => {
+            const totalHeight = document.body.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / totalHeight) * 100;
+            progressBar.style.width = progress + '%';
+        });
+        
+        // Back to top button functionality
+        const backToTop = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Podcast card interaction
+        const podcastCard = document.getElementById('podcast-card');
+        podcastCard.addEventListener('click', () => {
+            window.open('https://youtu.be/TfTESo4ygXc?si=QbgGp0zLEEynNp6r', '_blank');
+        });
+        
+        // Intersection Observer for fade-in-up animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.fade-in-up');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('appear');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Active link highlighting
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (scrollY >= (sectionTop - sectionHeight / 3)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            
+            // Smooth scrolling with offset for header
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        const headerHeight = document.querySelector('header').offsetHeight;
+                        const targetPosition = targetElement.offsetTop - headerHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
